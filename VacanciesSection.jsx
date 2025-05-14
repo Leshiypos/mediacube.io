@@ -38,6 +38,7 @@ export default function VacanciesSection(props) {
     }, [])
 
     useEffect(() => {
+        setSearchQuery("")
         if (selectedDepartment === "allCommads") {
             setFilteredVacancies(vacancies)
             setSearchInitial(vacancies)
@@ -78,6 +79,7 @@ export default function VacanciesSection(props) {
                 <div
                     style={{
                         ...centredStyle,
+                        width: "100%",
                         maxWidth: 800,
                         color: "rgba(99, 104, 132, 1)",
                         fontSize: 20,
@@ -110,7 +112,8 @@ export default function VacanciesSection(props) {
                                 marginBottom: 8,
                             }}
                         >
-                            Результаты поиска: 5
+                            Результаты поиска:{" "}
+                            {filteredVacancies && filteredVacancies.length}
                         </div>
                         <div
                             style={{
