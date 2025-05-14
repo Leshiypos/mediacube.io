@@ -133,6 +133,17 @@ export default function VacanciesSection(props) {
                                         key={index}
                                     />
                                 ))}
+                            {!!filteredVacancies?.length || (
+                                <span
+                                    style={{
+                                        fontSize: 16,
+                                        color: "rgba(99, 104, 132, 1)",
+                                    }}
+                                >
+                                    Не найдено результатов, соответствующих
+                                    вашим критериям
+                                </span>
+                            )}
                         </div>
                     </div>
                 </div>
