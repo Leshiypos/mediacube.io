@@ -18,6 +18,9 @@ const BASE_URL = "https://mcpay.mc-team.workers.dev/api/client/vacancies"
 export default function VacanciesSection(props) {
     const [vacancies, setVacancies] = useState(null)
     const [selectedDepartment, setSelectedDepartment] = useState("allCommads")
+    const [searchQuery, setSearchQuery] = useState("")
+    const [searchInitial, setSearchInitial] = useState(null)
+    const [filteredVacancies, setFilteredVacancies] = useState(null)
 
     useEffect(() => {
         fetch(BASE_URL)
@@ -28,12 +31,24 @@ export default function VacanciesSection(props) {
             )
             .then((data) => {
                 setVacancies(data.data)
-                console.log("Вакансии", data.data)
             })
             .catch((e) => {
                 console.log(e)
             })
     }, [])
+
+    useEffect(() => {
+        if (selectedDepartment === "allCommads") {
+            setFilteredVacancies(vacancies)
+            setSearchInitial(vacancies)
+        } else {
+            const filtered = vacancies.filter(
+                (v) => v.department === selectedDepartment
+            )
+            setFilteredVacancies(filtered)
+            setSearchInitial(filtered)
+        }
+    }, [selectedDepartment, vacancies])
 
     const departments = useMemo(() => {
         if (vacancies) {
@@ -46,12 +61,6 @@ export default function VacanciesSection(props) {
             return departments
         }
     }, [vacancies])
-
-    const filteredVacancies = useMemo(() => {
-        if (selectedDepartment === "allCommads") return vacancies
-        return vacancies.filter((v) => v.department === selectedDepartment)
-    }, [selectedDepartment, vacancies])
-    //const vacancies = store.vacancies
 
     return (
         <>
@@ -81,7 +90,12 @@ export default function VacanciesSection(props) {
                 </div>
                 <div style={{ display: "flex", marginTop: 80, gap: 24 }}>
                     <div>
-                        <Search />
+                        <Search
+                            searchQuery={searchQuery}
+                            setFunction={setSearchQuery}
+                            searchInitial={searchInitial}
+                            setFilteredVacancies={setFilteredVacancies}
+                        />
                         <FilterForm
                             departments={departments}
                             selected={selectedDepartment}
@@ -89,7 +103,13 @@ export default function VacanciesSection(props) {
                         />
                     </div>
                     <div>
-                        <div style={{ fontSize: 16, fontWeight: 600 }}>
+                        <div
+                            style={{
+                                fontSize: 16,
+                                fontWeight: 600,
+                                marginBottom: 8,
+                            }}
+                        >
                             Результаты поиска: 5
                         </div>
                         <div
@@ -99,7 +119,7 @@ export default function VacanciesSection(props) {
                                 gap: 8,
                             }}
                         >
-                            {vacancies &&
+                            {filteredVacancies &&
                                 filteredVacancies.map((vacancy, index) => (
                                     <JobCard
                                         category={vacancy.department}
@@ -114,6 +134,68 @@ export default function VacanciesSection(props) {
                     </div>
                 </div>
             </div>
+        </>
+    )
+}
+
+function Search(props) {
+    const { searchQuery, setFunction, searchInitial, setFilteredVacancies } =
+        props
+    const handleChange = (e) => {
+        const value = e.target.value
+        setFunction(value)
+        const filtered = searchInitial.filter((item) =>
+            item.name.toLowerCase().includes(value.toLowerCase())
+        )
+        setFilteredVacancies(filtered)
+    }
+    return (
+        <>
+            <div style={{ width: "100%" }}>
+                <div
+                    style={{
+                        fontSize: 16,
+                        color: "rgba(99, 104, 132, 1)",
+                        paddingBottom: 8,
+                    }}
+                >
+                    Открытые вакансии
+                </div>
+                <div
+                    style={{
+                        width: "100%",
+                        padding: 12,
+                        backgroundColor: "rgba(255, 255, 255, 1)",
+                        borderRadius: 8,
+                        display: "flex",
+                    }}
+                >
+                    <input
+                        className="search"
+                        style={{}}
+                        name="search"
+                        type="text"
+                        value={searchQuery}
+                        onChange={handleChange}
+                        placeholder="Поиск по открытым ваканииям"
+                    />
+                    <img
+                        style={{ marginLeft: 12, width: 16, height: 16 }}
+                        src="https://framerusercontent.com/images/KmLtRuXJYwOQRKwLEisBmrl490.png"
+                        alt="search icon"
+                    />
+                </div>
+            </div>
+            <style>
+                {`
+            .search{
+                border: none;
+                font-size: 16px;
+            }
+            .search::placeholder {
+                font-size: 16px;
+            }`}
+            </style>
         </>
     )
 }
@@ -134,7 +216,6 @@ function FilterForm(props) {
     const { departments, selected, onChange } = props
     const handleInputChange = (e) => {
         onChange(e.target.value)
-        console.log(e.target.value)
     }
     let totalQuantity = useMemo(() => {
         let total = 0
@@ -153,6 +234,7 @@ function FilterForm(props) {
                 display: "flex",
                 flexFlow: "column nowrap",
                 gap: 10,
+                marginTop: 24,
             }}
         >
             <div style={{ fontSize: 16, color: "rgba(99, 104, 132, 1)" }}>
@@ -188,7 +270,6 @@ function FilterForm(props) {
 
 function FilterItem(props) {
     const { name, title, count, checked, onChange } = props
-    console.log(checked === name)
     return (
         <>
             <label
@@ -231,56 +312,6 @@ function FilterItem(props) {
                 </span>
                 {title} · {count}
             </label>
-        </>
-    )
-}
-
-function Search(props) {
-    return (
-        <>
-            <div style={{ width: "100%" }}>
-                <div
-                    style={{
-                        fontSize: 16,
-                        color: "rgba(99, 104, 132, 1)",
-                        paddingBottom: 8,
-                    }}
-                >
-                    Открытые вакансии
-                </div>
-                <div
-                    style={{
-                        width: "100%",
-                        padding: 12,
-                        backgroundColor: "rgba(255, 255, 255, 1)",
-                        borderRadius: 8,
-                        display: "flex",
-                    }}
-                >
-                    <input
-                        className="search"
-                        style={{}}
-                        name="search"
-                        type="text"
-                        placeholder="Поиск по открытым ваканииям"
-                    />
-                    <img
-                        style={{ marginLeft: 12, width: 16, height: 16 }}
-                        src="https://framerusercontent.com/images/KmLtRuXJYwOQRKwLEisBmrl490.png"
-                        alt="search icon"
-                    />
-                </div>
-            </div>
-            <style>
-                {`
-            .search{
-                border: none;
-                font-size: 16px;
-            }
-            .search::placeholder {
-                font-size: 16px;
-            }`}
-            </style>
         </>
     )
 }
