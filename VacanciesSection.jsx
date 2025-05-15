@@ -15,6 +15,150 @@ import { useState, useEffect, useMemo } from "react"
  */
 const BASE_URL = "https://mcpay.mc-team.workers.dev/api/client/vacancies"
 
+const styles = {
+    SendResume: {
+        wrap: {
+            backgroundColor: "rgb(255, 255, 255)",
+            borderRadius: 20,
+            padding: 0,
+            display: "flex",
+            justifyContent: "space-around",
+            marginTop: 24,
+        },
+        leftColumn: {
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            flex: 6,
+            padding: "24px 0 24px 24px",
+        },
+        title: {
+            fontSize: 20,
+            fontWeight: 600,
+            margin: 0,
+            marginBottom: 8,
+        },
+        description: {
+            fontSize: 14,
+            fontWeight: 400,
+            color: "rgba(99, 104, 132, 1)",
+        },
+        button: {
+            backgroundColor: "rgba(64, 57, 255, 1)",
+            padding: "10px 16px",
+            border: "none",
+            borderRadius: 8,
+            color: "rgba(255, 255, 255, 1)",
+            width: "fit-content",
+            cursor: "pointer",
+        },
+        imgWrap: { flex: 5 },
+        img: { width: "100%" },
+    },
+    VacanciesSection: {
+        wrap: {
+            maxWidth: 1032,
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            flexFlow: "column wrap",
+            marginLeft: "auto",
+            marginRight: "auto",
+            fontFamily: "'SF Pro Display', sans-serif",
+        },
+        title: { textAlign: "center" },
+        description: {
+            marginLeft: "auto",
+            marginRight: "auto",
+            width: "100%",
+            maxWidth: 800,
+            color: "rgba(99, 104, 132, 1)",
+            fontSize: 20,
+            textAlign: "center",
+        },
+        wrapContent: { display: "flex", marginTop: 80, gap: 24 },
+        searchRezTitle: {
+            fontSize: 16,
+            fontWeight: 600,
+            marginBottom: 8,
+        },
+        searchRezContent: {
+            display: "flex",
+            flexDirection: "column",
+            gap: 8,
+        },
+        notFound: {
+            fontSize: 16,
+            color: "rgba(99, 104, 132, 1)",
+        },
+    },
+    Search: {
+        wrap: { width: "100%" },
+        title: {
+            fontSize: 16,
+            color: "rgba(99, 104, 132, 1)",
+            paddingBottom: 8,
+        },
+        searchWrap: {
+            width: "100%",
+            padding: 12,
+            backgroundColor: "rgba(255, 255, 255, 1)",
+            borderRadius: 8,
+            display: "flex",
+        },
+    },
+    JobCard: {
+        wrap: {
+            margin: 0,
+            listStyleType: "none",
+            borderRadius: 12,
+            backgroundColor: "rgba(255, 255, 255, 1)",
+            padding: 24,
+            width: "100%",
+        },
+        categoty: {
+            color: "rgba(64, 57, 255, 1)",
+            paddingBottom: 8,
+            fontSize: 14,
+        },
+        title: { paddingBottom: 4, fontSize: 20, fontWeight: 600 },
+        description: { fontSize: 16, color: "rgba(99, 104, 132, 1)" },
+    },
+    FilterItem: {
+        label: {
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            fontSize: 14,
+        },
+        input: { display: "none" },
+        span: {
+            display: "block",
+            width: 20,
+            height: 20,
+            borderRadius: 6,
+            padding: 5,
+            border: "1px solid rgba(64, 57, 255, 1)",
+        },
+        checkSpan: {
+            backgroundColor: "rgba(64, 57, 255, 1)",
+            width: "100%",
+            height: "100%",
+            borderRadius: 3,
+        },
+    },
+    FilterForm: {
+        wrap: {
+            display: "flex",
+            flexFlow: "column nowrap",
+            gap: 10,
+            marginTop: 24,
+        },
+        title: { fontSize: 16, color: "rgba(99, 104, 132, 1)" },
+        form: { display: "flex", flexFlow: "column nowrap", gap: 10 },
+    },
+}
+
 export default function VacanciesSection(props) {
     const [vacancies, setVacancies] = useState(null)
     const [selectedDepartment, setSelectedDepartment] = useState("allCommads")
@@ -68,29 +212,16 @@ export default function VacanciesSection(props) {
             <style>{`
             @import url('https://fonts.cdnfonts.com/css/sf-pro-display');
             `}</style>
-            <div
-                style={{
-                    ...conteinerStyle,
-                    ...centredStyle,
-                    fontFamily: "'SF Pro Display', sans-serif",
-                }}
-            >
-                <h1 style={{ textAlign: "center" }}>7 открытых позиций</h1>
-                <div
-                    style={{
-                        ...centredStyle,
-                        width: "100%",
-                        maxWidth: 800,
-                        color: "rgba(99, 104, 132, 1)",
-                        fontSize: 20,
-                        textAlign: "center",
-                    }}
-                >
+            <div style={styles.VacanciesSection.wrap}>
+                <h1 style={styles.VacanciesSection.title}>
+                    7 открытых позиций
+                </h1>
+                <div style={styles.VacanciesSection.description}>
                     За год мы вырастаем на 30%, поэтому у нас всегда есть
                     открытые вакансии.Ищем талантливых специалистов в разные
                     отделы: от маркетинга до IT
                 </div>
-                <div style={{ display: "flex", marginTop: 80, gap: 24 }}>
+                <div style={styles.VacanciesSection.wrapContent}>
                     <div>
                         <Search
                             searchQuery={searchQuery}
@@ -105,23 +236,11 @@ export default function VacanciesSection(props) {
                         />
                     </div>
                     <div>
-                        <div
-                            style={{
-                                fontSize: 16,
-                                fontWeight: 600,
-                                marginBottom: 8,
-                            }}
-                        >
+                        <div style={styles.VacanciesSection.searchRezTitle}>
                             Результаты поиска:{" "}
                             {filteredVacancies && filteredVacancies.length}
                         </div>
-                        <div
-                            style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                gap: 8,
-                            }}
-                        >
+                        <div style={styles.VacanciesSection.searchRezContent}>
                             {filteredVacancies &&
                                 filteredVacancies.map((vacancy, index) => (
                                     <JobCard
@@ -134,21 +253,51 @@ export default function VacanciesSection(props) {
                                     />
                                 ))}
                             {!!filteredVacancies?.length || (
-                                <span
-                                    style={{
-                                        fontSize: 16,
-                                        color: "rgba(99, 104, 132, 1)",
-                                    }}
-                                >
+                                <span style={styles.VacanciesSection.notFound}>
                                     Не найдено результатов, соответствующих
                                     вашим критериям
                                 </span>
                             )}
                         </div>
+                        <SendResume />
                     </div>
                 </div>
             </div>
         </>
+    )
+}
+
+function SendResume(props) {
+    return (
+        <div style={styles.SendResume.wrap}>
+            <div style={styles.SendResume.leftColumn}>
+                <div>
+                    <h5 style={styles.SendResume.title}>
+                        Не нашли подходящую вакансию?
+                    </h5>
+                    <div style={styles.SendResume.description}>
+                        Даже если нужной вам вакансии нет в списке, пришлите нам
+                        свое резюме. Нам всегда нужны талантливые люди, и
+                        возможно, ваша вакансия откроется в ближайшее время
+                    </div>
+                </div>
+                <motion.button
+                    whileHover={{
+                        backgroundColor: "rgba(25, 17, 245, 1)",
+                    }}
+                    style={styles.SendResume.button}
+                >
+                    Отправить резюме
+                </motion.button>
+            </div>
+            <div style={styles.SendResume.imgWrap}>
+                <img
+                    style={styles.SendResume.img}
+                    src="https://framerusercontent.com/images/A3raWVvP4qvxqC9GEd9bGpAi2z0.png"
+                    alt="Не нашли подходящую вакансию?"
+                />
+            </div>
+        </div>
     )
 }
 
@@ -165,28 +314,11 @@ function Search(props) {
     }
     return (
         <>
-            <div style={{ width: "100%" }}>
-                <div
-                    style={{
-                        fontSize: 16,
-                        color: "rgba(99, 104, 132, 1)",
-                        paddingBottom: 8,
-                    }}
-                >
-                    Открытые вакансии
-                </div>
-                <div
-                    style={{
-                        width: "100%",
-                        padding: 12,
-                        backgroundColor: "rgba(255, 255, 255, 1)",
-                        borderRadius: 8,
-                        display: "flex",
-                    }}
-                >
+            <div style={styles.Search.wrap}>
+                <div style={styles.Search.title}>Открытые вакансии</div>
+                <div style={styles.Search.searchWrap}>
                     <input
                         className="search"
-                        style={{}}
                         name="search"
                         type="text"
                         value={searchQuery}
@@ -214,18 +346,6 @@ function Search(props) {
     )
 }
 
-const conteinerStyle = {
-    maxWidth: 1032,
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    flexFlow: "column wrap",
-}
-const centredStyle = {
-    marginLeft: "auto",
-    marginRight: "auto",
-}
-
 function FilterForm(props) {
     const { departments, selected, onChange } = props
     const handleInputChange = (e) => {
@@ -243,20 +363,9 @@ function FilterForm(props) {
         }
     }, [departments])
     return (
-        <div
-            style={{
-                display: "flex",
-                flexFlow: "column nowrap",
-                gap: 10,
-                marginTop: 24,
-            }}
-        >
-            <div style={{ fontSize: 16, color: "rgba(99, 104, 132, 1)" }}>
-                Фильтровать по командам
-            </div>
-            <form
-                style={{ display: "flex", flexFlow: "column nowrap", gap: 10 }}
-            >
+        <div style={styles.FilterForm.wrap}>
+            <div style={styles.FilterForm.title}>Фильтровать по командам</div>
+            <form style={styles.FilterForm.form}>
                 <FilterItem
                     name="allCommads"
                     title="Все команды"
@@ -286,40 +395,17 @@ function FilterItem(props) {
     const { name, title, count, checked, onChange } = props
     return (
         <>
-            <label
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    fontSize: 14,
-                }}
-            >
+            <label style={styles.FilterItem.label}>
                 <input
-                    style={{ display: "none" }}
+                    style={styles.FilterItem.input}
                     type="radio"
                     value={name}
                     checked={checked === name}
                     onChange={onChange}
                 />
-                <span
-                    style={{
-                        display: "block",
-                        width: 20,
-                        height: 20,
-                        borderRadius: 6,
-                        padding: 5,
-                        border: "1px solid rgba(64, 57, 255, 1)",
-                    }}
-                >
+                <span style={styles.FilterItem.span}>
                     {checked === name ? (
-                        <div
-                            style={{
-                                backgroundColor: "rgba(64, 57, 255, 1)",
-                                width: "100%",
-                                height: "100%",
-                                borderRadius: 3,
-                            }}
-                        ></div>
+                        <div style={styles.FilterItem.checkSpan}></div>
                     ) : (
                         ""
                     )}
@@ -338,28 +424,10 @@ type TProps = {
 function JobCard(props: TProps): React.JSX.Element {
     const { category, vacancyName, description } = props
     return (
-        <li style={styles.wrap}>
-            <div style={styles.categoty}>{category}</div>
-            <div style={styles.title}>{vacancyName}</div>
-            <div style={styles.description}>{description}</div>
+        <li style={styles.JobCard.wrap}>
+            <div style={styles.JobCard.categoty}>{category}</div>
+            <div style={styles.JobCard.title}>{vacancyName}</div>
+            <div style={styles.JobCard.description}>{description}</div>
         </li>
     )
-}
-
-const styles = {
-    wrap: {
-        margin: 0,
-        listStyleType: "none",
-        borderRadius: 12,
-        backgroundColor: "rgba(255, 255, 255, 1)",
-        padding: 24,
-        width: "100%",
-    },
-    categoty: {
-        color: "rgba(64, 57, 255, 1)",
-        paddingBottom: 8,
-        fontSize: 14,
-    },
-    title: { paddingBottom: 4, fontSize: 20, fontWeight: 600 },
-    description: { fontSize: 16, color: "rgba(99, 104, 132, 1)" },
 }
