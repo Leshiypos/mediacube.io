@@ -66,7 +66,12 @@ const styles = {
             marginRight: "auto",
             fontFamily: "'SF Pro Display', sans-serif",
         },
-        title: { textAlign: "center" },
+        title: {
+            textAlign: "center",
+            fontSize: 40,
+            margin: 0,
+            marginBottom: 8,
+        },
         description: {
             marginLeft: "auto",
             marginRight: "auto",
@@ -214,7 +219,7 @@ export default function VacanciesSection(props) {
             `}</style>
             <div style={styles.VacanciesSection.wrap}>
                 <h1 style={styles.VacanciesSection.title}>
-                    7 открытых позиций
+                    {filteredVacancies?.length || ""} открытых позиций
                 </h1>
                 <div style={styles.VacanciesSection.description}>
                     За год мы вырастаем на 30%, поэтому у нас всегда есть
