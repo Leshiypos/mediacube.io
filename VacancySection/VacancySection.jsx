@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useState, useEffect, useMemo } from "react";
 import { BASE_URL } from "https://framer.com/m/VacanciesSection-aPqN.js";
 import SingleCard from "https://framer.com/m/SingleCard-hpiu.js";
+import ButtonBack from "https://framer.com/m/ButtonBack-gKLV.js";
 
 /**
  * These annotations control how your component sizes
@@ -16,22 +17,39 @@ import SingleCard from "https://framer.com/m/SingleCard-hpiu.js";
  * @framerIntrinsicWidth 1032
  */
 export default function VacancySection(props) {
+  const [isLoading, setLoading] = useState(false);
+  const [isError, setError] = useState(false);
   const [vacancy, setVacancy] = useState(null);
+  const [slug, setSlug] = (useState < string) | (null > null);
   useEffect(() => {
-    fetch(`${BASE_URL}/sales-manager-at-influencer-marketing-agency-86 `)
-      .then((response) =>
-        response.ok
-          ? response.json()
-          : Promise.reject(`Ошибка ${response.status}`)
-      )
-      .then((data) => {
-        setVacancy(data.data);
-        console.log(data.data);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    const params = new URLSearchParams(window.location.search);
+    const value = params.get("slug") || null;
+    console.log(value);
+    if (value) {
+      setSlug(value);
+    }
   }, []);
+  useEffect(() => {
+    if (slug) {
+      setError(false);
+      setLoading(true);
+      fetch(`${BASE_URL}/${slug} `)
+        .then((response) =>
+          response.ok
+            ? response.json()
+            : Promise.reject(`Ошибка ${response.status}`)
+        )
+        .then((data) => {
+          setVacancy(data.data);
+          setLoading(false);
+          console.log(data.data);
+        })
+        .catch((e) => {
+          console.log(e);
+          setError(true);
+        });
+    }
+  }, [slug]);
 
   return (
     <>
@@ -56,39 +74,67 @@ export default function VacancySection(props) {
                 margin-bottom: 8px;
             }
             `}</style>
-      <div style={{ fontFamily: "'SF Pro Display', sans-serif" }}>
-        {vacancy && (
-          <SingleCard name={vacancy.name} department={vacancy.department} />
-        )}
-        {vacancy && (
-          <>
-            <div style={{ marginTop: 80 }}>
+      <div
+        style={{
+          fontFamily: "'SF Pro Display', sans-serif",
+          maxWidth: 1032,
+        }}
+      >
+        {isError ? (
+          <div>Произошла ошибка загрузки. Перегрузите страницу</div>
+        ) : isLoading ? (
+          <div>Загрузка данных</div>
+        ) : (
+          vacancy && (
+            <>
+              <SingleCard name={vacancy.name} department={vacancy.department} />
+              <div style={{ marginTop: 80 }}>
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 8,
+                    alignItems: "center",
+                    color: "rgba(64, 57, 255, 1)",
+                    fontWeight: 600,
+                  }}
+                >
+                  <img
+                    src="https://framerusercontent.com/images/Gi7WIMAxKV3wB8smlLm0DY7WMPQ.png"
+                    alt="icon"
+                  />
+                  Удаленная работа
+                </div>
+                <h3 style={{ fontSize: 32, margin: "16px 0" }}>
+                  Mediacube is looking for a {vacancy.name}!
+                </h3>
+                <div
+                  className="content_single_vacancy"
+                  dangerouslySetInnerHTML={{
+                    __html: vacancy.vacancy_contents[0].content,
+                  }}
+                />
+              </div>
               <div
                 style={{
                   display: "flex",
-                  gap: 8,
-                  alignItems: "center",
-                  color: "rgba(64, 57, 255, 1)",
-                  fontWeight: 600,
+                  gap: 16,
+                  marginTop: 32,
                 }}
               >
-                <img
-                  src="https://framerusercontent.com/images/Gi7WIMAxKV3wB8smlLm0DY7WMPQ.png"
-                  alt="icon"
+                <ButtonBack
+                  title={"Посмотреть другие вакансии"}
+                  href="/"
+                  withArrow={true}
                 />
-                Удаленная работа
+                <ButtonBack
+                  title={"Отправить резюме"}
+                  href="#"
+                  withArrow={false}
+                  isDark={true}
+                />
               </div>
-              <h3 style={{ fontSize: 32, margin: "16px 0" }}>
-                Mediacube is looking for a Frontend Developer!
-              </h3>
-              <div
-                className="content_single_vacancy"
-                dangerouslySetInnerHTML={{
-                  __html: vacancy.vacancy_contents[0].content,
-                }}
-              />
-            </div>
-          </>
+            </>
+          )
         )}
       </div>
     </>

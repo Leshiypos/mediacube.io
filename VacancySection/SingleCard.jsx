@@ -2,6 +2,7 @@
 
 import { addPropertyControls, ControlType } from "framer";
 import { motion } from "framer-motion";
+import ButtonBack from "https://framer.com/m/ButtonBack-gKLV.js";
 
 /**
  * @framerSupportedLayoutWidth auto
@@ -26,28 +27,13 @@ export default function SingleCard(props) {
           <h5 style={styles.title}>{name}</h5>
         </div>
         <div style={{ display: "flex", gap: 16 }}>
-          <motion.button
-            whileHover={{
-              backgroundColor: "rgb(64, 57, 255)",
-              color: "rgba(255, 255, 255, 1)",
-            }}
-            style={{
-              ...styles.button,
-              backgroundColor: "rgba(64, 57, 255, 0.08)",
-              color: "rgba(64, 57, 255, 1)",
-              fontWeight: 600,
-            }}
-          >
-            <span style={{ marginRight: 14 }}>{"<"}</span>Все вакансии
-          </motion.button>
-          <motion.button
-            whileHover={{
-              backgroundColor: "rgba(25, 17, 245, 1)",
-            }}
-            style={styles.button}
-          >
-            Поделиться резюме
-          </motion.button>
+          <ButtonBack title={"Все вакансии"} href="/" withArrow={true} />
+          <ButtonBack
+            title={"Поделиться Резюме"}
+            href="#"
+            withArrow={false}
+            isDark={true}
+          />
         </div>
       </div>
       <div style={styles.imgWrap}>
@@ -89,15 +75,6 @@ const styles = {
     fontSize: 14,
     fontWeight: 400,
     color: "rgba(99, 104, 132, 1)",
-  },
-  button: {
-    backgroundColor: "rgba(64, 57, 255, 1)",
-    padding: "10px 16px",
-    border: "none",
-    borderRadius: 8,
-    color: "rgba(255, 255, 255, 1)",
-    width: "fit-content",
-    cursor: "pointer",
   },
   imgWrap: { flex: 5, height: "100%" },
   img: {

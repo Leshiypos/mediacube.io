@@ -13,7 +13,7 @@ import { useState, useEffect, useMemo } from "react"
  *
  * @framerIntrinsicWidth 1032
  */
-const BASE_URL = "https://mcpay.mc-team.workers.dev/api/client/vacancies"
+export const BASE_URL = "https://mcpay.mc-team.workers.dev/api/client/vacancies"
 
 const styles = {
     SendResume: {
@@ -118,7 +118,6 @@ const styles = {
             listStyleType: "none",
             borderRadius: 12,
             backgroundColor: "rgba(255, 255, 255, 1)",
-            padding: 24,
             width: "100%",
         },
         categoty: {
@@ -128,6 +127,12 @@ const styles = {
         },
         title: { paddingBottom: 4, fontSize: 20, fontWeight: 600 },
         description: { fontSize: 16, color: "rgba(99, 104, 132, 1)" },
+        link: {
+            display: "block",
+            color: "inherit",
+            textDecoration: "none",
+            padding: 24,
+        },
     },
     FilterItem: {
         label: {
@@ -218,9 +223,9 @@ export default function VacanciesSection(props) {
             @import url('https://fonts.cdnfonts.com/css/sf-pro-display');
             `}</style>
             <div style={styles.VacanciesSection.wrap}>
-                <h1 style={styles.VacanciesSection.title}>
+                <h2 style={styles.VacanciesSection.title}>
                     {filteredVacancies?.length || ""} открытых позиций
-                </h1>
+                </h2>
                 <div style={styles.VacanciesSection.description}>
                     За год мы вырастаем на 30%, поэтому у нас всегда есть
                     открытые вакансии.Ищем талантливых специалистов в разные
@@ -254,6 +259,7 @@ export default function VacanciesSection(props) {
                                         description={
                                             vacancy.vacancy_contents[0].preview
                                         }
+                                        slug={vacancy.slug}
                                         key={index}
                                     />
                                 ))}
@@ -425,14 +431,17 @@ type TProps = {
     category: string
     vacancyName: string
     description: string
+    slug: string
 }
 function JobCard(props: TProps): React.JSX.Element {
-    const { category, vacancyName, description } = props
+    const { category, vacancyName, description, slug } = props
     return (
         <li style={styles.JobCard.wrap}>
-            <div style={styles.JobCard.categoty}>{category}</div>
-            <div style={styles.JobCard.title}>{vacancyName}</div>
-            <div style={styles.JobCard.description}>{description}</div>
+            <a href={`/vacancy?slug=${slug}`} style={styles.JobCard.link}>
+                <div style={styles.JobCard.categoty}>{category}</div>
+                <div style={styles.JobCard.title}>{vacancyName}</div>
+                <div style={styles.JobCard.description}>{description}</div>
+            </a>
         </li>
     )
 }

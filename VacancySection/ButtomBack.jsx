@@ -1,42 +1,66 @@
 // Get Started: https://www.framer.com/developers
 
-import { addPropertyControls, ControlType } from "framer";
-import { motion } from "framer-motion";
+import { addPropertyControls, ControlType } from "framer"
+import { motion } from "framer-motion"
 
 /**
  * @framerSupportedLayoutWidth auto
  * @framerSupportedLayoutHeight auto
  */
+type TProps = {
+    title?: string
+    href?: string
+    isDark?: boolean
+    withArrow?: boolean
+}
 export default function ButtonBack(props) {
-  const { title } = props;
+    const { title, href, isDark, withArrow } = props
 
-  return (
-    <motion.button
-      whileHover={{
-        backgroundColor: "rgb(64, 57, 255)",
-        color: "rgba(255, 255, 255, 1)",
-      }}
-      style={{
-        ...styles.button,
-        backgroundColor: "rgba(64, 57, 255, 0.08)",
-        color: "rgba(64, 57, 255, 1)",
-        fontWeight: 600,
-      }}
-    >
-      <span style={{ marginRight: 14 }}>{"<"}</span>
-      {title}
-    </motion.button>
-  );
+    return (
+        <motion.a
+            href="/"
+            whileHover={{
+                backgroundColor: hover,
+                color: "rgba(255, 255, 255, 1)",
+            }}
+            style={{
+                ...styles.button,
+                backgroundColor: isDark ? dark : gray,
+                color: isDark ? white : dark,
+                fontWeight: isDark ? 400 : 600,
+            }}
+        >
+            {withArrow && <span style={{ marginRight: 14 }}>{"<"}</span>}
+            {title}
+        </motion.a>
+    )
 }
 
 const styles = {
-  button: {
-    backgroundColor: "rgba(64, 57, 255, 1)",
-    padding: "10px 16px",
-    border: "none",
-    borderRadius: 8,
-    color: "rgba(255, 255, 255, 1)",
-    width: "fit-content",
-    cursor: "pointer",
-  },
-};
+    button: {
+        backgroundColor: "rgba(64, 57, 255, 1)",
+        padding: "10px 16px",
+        border: "none",
+        borderRadius: 8,
+        color: "rgba(255, 255, 255, 1)",
+        width: "fit-content",
+        cursor: "pointer",
+        display: "block",
+        textDecoration: "none",
+    },
+}
+const dark = "rgba(64, 57, 255, 1)"
+const gray = "rgba(64, 57, 255, 0.08)"
+const white = "rgba(255, 255, 255, 1)"
+const hover = "rgba(25, 17, 245, 1)"
+
+ButtonBack.defaultProps = {
+    title: "Кнопка со стрелкой",
+    href: "#",
+    isDark: false,
+    withArrow: false,
+}
+
+addPropertyControls(ButtonBack, {
+    title: { type: ControlType.String, title: "Button text title" },
+})
