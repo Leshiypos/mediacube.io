@@ -22,8 +22,9 @@ export default function VacancySection(props) {
   const [vacancy, setVacancy] = useState(null);
   const [slug, setSlug] = (useState < string) | (null > null);
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const value = params.get("slug") || null;
+    const params = window.location.href;
+    const parseParams = params.split("/");
+    const value = parseParams[parseParams.length - 1] || null;
     console.log(value);
     if (value) {
       setSlug(value);

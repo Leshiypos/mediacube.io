@@ -437,7 +437,7 @@ function JobCard(props: TProps): React.JSX.Element {
     const { category, vacancyName, description, slug } = props
     return (
         <li style={styles.JobCard.wrap}>
-            <a href={`/vacancy?slug=${slug}`} style={styles.JobCard.link}>
+            <a href={`/vacancy/${slug}`} style={styles.JobCard.link}>
                 <div style={styles.JobCard.categoty}>{category}</div>
                 <div style={styles.JobCard.title}>{vacancyName}</div>
                 <div style={styles.JobCard.description}>{description}</div>
