@@ -3,17 +3,39 @@
 import { addPropertyControls, ControlType } from "framer";
 import { motion } from "framer-motion";
 import ButtonBack from "https://framer.com/m/ButtonBack-gKLV.js";
+import { useState, useEffect, useMemo } from "react";
 
 /**
  * @framerSupportedLayoutWidth auto
  * @framerSupportedLayoutHeight auto
  */
 export default function SingleCard(props) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const update = () => setIsMobile(window.innerWidth < 768);
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
   const { name, department } = props;
 
   return (
-    <div style={styles.wrap}>
-      <div style={styles.leftColumn}>
+    <div
+      style={isMobile ? { ...styles.wrap, flexFlow: "column" } : styles.wrap}
+    >
+      <div
+        style={
+          isMobile
+            ? {
+                ...styles.leftColumn,
+                gap: 20,
+                padding: 20,
+                width: "100%",
+              }
+            : styles.leftColumn
+        }
+      >
         <div>
           <div
             style={{
@@ -26,7 +48,17 @@ export default function SingleCard(props) {
           </div>
           <h5 style={styles.title}>{name}</h5>
         </div>
-        <div style={{ display: "flex", gap: 16 }}>
+        <div
+          style={
+            isMobile
+              ? {
+                  display: "flex",
+                  gap: 16,
+                  justifyContent: "space-between",
+                }
+              : { display: "flex", gap: 16 }
+          }
+        >
           <ButtonBack title={"Все вакансии"} href="/" withArrow={true} />
           <ButtonBack
             title={"Поделиться Резюме"}
