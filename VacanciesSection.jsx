@@ -175,6 +175,14 @@ export default function VacanciesSection(props) {
     const [searchQuery, setSearchQuery] = useState("")
     const [searchInitial, setSearchInitial] = useState(null)
     const [filteredVacancies, setFilteredVacancies] = useState(null)
+    const [isMobile, setIsMobile] = useState(false)
+
+    useEffect(() => {
+        const update = () => setIsMobile(window.innerWidth < 768)
+        update()
+        window.addEventListener("resize", update)
+        return () => window.removeEventListener("resize", update)
+    }, [])
 
     useEffect(() => {
         fetch(BASE_URL)
@@ -224,15 +232,33 @@ export default function VacanciesSection(props) {
             `}</style>
             <div style={styles.VacanciesSection.wrap}>
                 <h2 style={styles.VacanciesSection.title}>
-                    {filteredVacancies?.length || ""} открытых позиций
+                    {filteredVacancies?.length
+                        ? `${filteredVacancies?.length} открытых позиций`
+                        : "Нет открытых позиций"}
                 </h2>
                 <div style={styles.VacanciesSection.description}>
                     За год мы вырастаем на 30%, поэтому у нас всегда есть
                     открытые вакансии.Ищем талантливых специалистов в разные
                     отделы: от маркетинга до IT
                 </div>
-                <div style={styles.VacanciesSection.wrapContent}>
-                    <div>
+                <div
+                    style={
+                        isMobile
+                            ? {
+                                  ...styles.VacanciesSection.wrapContent,
+                                  flexFlow: "row wrap",
+                                  marginTop: 30,
+                              }
+                            : styles.VacanciesSection.wrapContent
+                    }
+                >
+                    <div
+                        style={
+                            isMobile
+                                ? { width: "100%", minWidth: 328 }
+                                : { minWidth: 328 }
+                        }
+                    >
                         <Search
                             searchQuery={searchQuery}
                             setFunction={setSearchQuery}
@@ -348,10 +374,16 @@ function Search(props) {
             .search{
                 border: none;
                 font-size: 16px;
+                width : 100%;
             }
             .search::placeholder {
                 font-size: 16px;
-            }`}
+            }
+              .search:focus,
+                .search:hover {
+                    border: none;
+                    outline: none;
+  }`}
             </style>
         </>
     )

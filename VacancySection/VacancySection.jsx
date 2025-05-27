@@ -21,20 +21,26 @@ export default function VacancySection(props) {
   const [isError, setError] = useState(false);
   const [vacancy, setVacancy] = useState(null);
   const [slug, setSlug] = (useState < string) | (null > null);
+  const [isMobile, setIsMobile] = useState(false);
+
   useEffect(() => {
-    const params = window.location.href;
-    const parseParams = params.split("/");
-    const value = parseParams[parseParams.length - 1] || null;
-    console.log(value);
-    if (value) {
-      setSlug(value);
-    }
+    const update = () => setIsMobile(window.innerWidth < 768);
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const segments = url.pathname.split("/");
+    const last = segments.pop() || segments.pop(); // на случай "/" на конце
+    setSlug(last || null);
   }, []);
   useEffect(() => {
     if (slug) {
       setError(false);
       setLoading(true);
-      fetch(`${BASE_URL}/${slug} `)
+      fetch(`${BASE_URL}/${slug}`)
         .then((response) =>
           response.ok
             ? response.json()
@@ -89,7 +95,7 @@ export default function VacancySection(props) {
           vacancy && (
             <>
               <SingleCard name={vacancy.name} department={vacancy.department} />
-              <div style={{ marginTop: 80 }}>
+              <div style={{ marginTop: isMobile ? 20 : 80 }}>
                 <div
                   style={{
                     display: "flex",
@@ -111,7 +117,9 @@ export default function VacancySection(props) {
                 <div
                   className="content_single_vacancy"
                   dangerouslySetInnerHTML={{
-                    __html: vacancy.vacancy_contents[0].content,
+                    __html:
+                      vacancy?.vacancy_contents?.[0]?.content ||
+                      "<p>Нет данных</p>",
                   }}
                 />
               </div>
