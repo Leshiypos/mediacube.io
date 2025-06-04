@@ -3,6 +3,7 @@
 import { addPropertyControls, ControlType } from "framer"
 import { motion } from "framer-motion"
 import { useState, useEffect, useMemo } from "react"
+import { getLocaleFromUrl } from "https://framer.com/m/funcs-hp22.js"
 
 /**
  * These annotations control how your component sizes
@@ -42,6 +43,7 @@ const styles = {
             fontSize: 14,
             fontWeight: 400,
             color: "rgba(99, 104, 132, 1)",
+            marginBottom: 10,
         },
         button: {
             backgroundColor: "rgba(64, 57, 255, 1)",
@@ -169,6 +171,43 @@ const styles = {
     },
 }
 
+const dataTransl = {
+    titleTrue: {
+        en: "open positions",
+        ru: "открытых позиций",
+        es: "puestos vacantes",
+        pt: "vagas disponíveis",
+    },
+    titleFalse: {
+        en: "No open positions",
+        ru: "Нет открытых позиций",
+        es: "No hay puestos vacantes",
+        pt: "Nenhuma vaga aberta",
+    },
+    description: {
+        en: "We grow by 30% per year, so we always have open positions. We are looking for talented specialists in various departments: from marketing to IT",
+        ru: "За год мы вырастаем на 30%, поэтому у нас всегда есть открытые вакансии.Ищем талантливых специалистов в разныеотделы: от маркетинга до IT",
+        es: "Crecemos un 30 % anual, por lo que siempre tenemos vacantes. Buscamos especialistas con talento en diversos departamentos: desde marketing hasta TI.",
+        pt: "Crescemos 30% ao ano, por isso sempre temos vagas em aberto. Buscamos especialistas talentosos em diversos departamentos: de marketing a TI.",
+    },
+    notFound: {
+        en: "No results found matching your criteria",
+        ru: "Не найдено результатов, соответствующих вашим критериям",
+        es: "No se encontraron resultados que coincidan con tus criterios",
+        pt: "Nenhum resultado encontrado correspondendo aos seus critérios",
+    },
+    totalTitle: {
+        en: "Search results:",
+        ru: "Результаты поиска:",
+        es: "Resultados de la búsqueda:",
+        pt: "Resultados da pesquisa:",
+    },
+}
+function checkLocale(leng) {
+    const languagesPos = ["ru", "pt", "es", "en"]
+    return languagesPos.includes(leng)
+}
+
 export default function VacanciesSection(props) {
     const [vacancies, setVacancies] = useState(null)
     const [selectedDepartment, setSelectedDepartment] = useState("allCommads")
@@ -176,12 +215,22 @@ export default function VacanciesSection(props) {
     const [searchInitial, setSearchInitial] = useState(null)
     const [filteredVacancies, setFilteredVacancies] = useState(null)
     const [isMobile, setIsMobile] = useState(false)
+    const [locale, setLocale] = useState("en")
 
     useEffect(() => {
         const update = () => setIsMobile(window.innerWidth < 768)
         update()
         window.addEventListener("resize", update)
         return () => window.removeEventListener("resize", update)
+    }, [])
+
+    useEffect(() => {
+        const currentUrl = window.location.href
+        const loc = getLocaleFromUrl(currentUrl)
+        console.log(currentUrl)
+        console.log(loc)
+        console.log(checkLocale(loc))
+        if (loc && checkLocale(loc)) setLocale(loc)
     }, [])
 
     useEffect(() => {
@@ -224,7 +273,7 @@ export default function VacanciesSection(props) {
             return departments
         }
     }, [vacancies])
-
+    console.log(vacancies)
     return (
         <>
             <style>{`
@@ -233,13 +282,11 @@ export default function VacanciesSection(props) {
             <div style={styles.VacanciesSection.wrap}>
                 <h2 style={styles.VacanciesSection.title}>
                     {filteredVacancies?.length
-                        ? `${filteredVacancies?.length} открытых позиций`
-                        : "Нет открытых позиций"}
+                        ? `${filteredVacancies?.length} ${dataTransl.titleTrue[locale]}`
+                        : dataTransl.titleFalse[locale]}
                 </h2>
                 <div style={styles.VacanciesSection.description}>
-                    За год мы вырастаем на 30%, поэтому у нас всегда есть
-                    открытые вакансии.Ищем талантливых специалистов в разные
-                    отделы: от маркетинга до IT
+                    {dataTransl.description[locale]}
                 </div>
                 <div
                     style={
@@ -264,16 +311,18 @@ export default function VacanciesSection(props) {
                             setFunction={setSearchQuery}
                             searchInitial={searchInitial}
                             setFilteredVacancies={setFilteredVacancies}
+                            locale={locale}
                         />
                         <FilterForm
                             departments={departments}
                             selected={selectedDepartment}
                             onChange={setSelectedDepartment}
+                            locale={locale}
                         />
                     </div>
                     <div>
                         <div style={styles.VacanciesSection.searchRezTitle}>
-                            Результаты поиска:{" "}
+                            {dataTransl.totalTitle[locale]}{" "}
                             {filteredVacancies && filteredVacancies.length}
                         </div>
                         <div style={styles.VacanciesSection.searchRezContent}>
@@ -291,12 +340,11 @@ export default function VacanciesSection(props) {
                                 ))}
                             {!!filteredVacancies?.length || (
                                 <span style={styles.VacanciesSection.notFound}>
-                                    Не найдено результатов, соответствующих
-                                    вашим критериям
+                                    {dataTransl.notFound[locale]}
                                 </span>
                             )}
                         </div>
-                        <SendResume />
+                        <SendResume locale={locale} />
                     </div>
                 </div>
             </div>
@@ -305,17 +353,37 @@ export default function VacanciesSection(props) {
 }
 
 function SendResume(props) {
+    const { locale } = props
+
+    const lengSendResume = {
+        title: {
+            en: "Didn't find a suitable vacancy?",
+            ru: "Не нашли подходящую вакансию?",
+            es: "¿No encontraste una vacante adecuada?",
+            pt: "Não encontrou uma vaga adequada?",
+        },
+        content: {
+            en: "Even if the vacancy you need is not on the list, send us your resume. We are always looking for talented people, and perhaps your vacancy will open soon",
+            ru: "Даже если нужной вам вакансии нет в списке, пришлите нам свое резюме. Нам всегда нужны талантливые люди, и возможно, ваша вакансия откроется в ближайшее время",
+            es: "Incluso si la vacante que necesitas no está en la lista, envíanos tu currículum. Siempre buscamos personas con talento, y quizás tu vacante se abra pronto.",
+            pt: "Mesmo que a vaga que você precisa não esteja na lista, envie seu currículo. Estamos sempre em busca de talentos, e quem sabe sua vaga não abre em breve.",
+        },
+        btn: {
+            en: "Send resume",
+            ru: "Отправить резюме",
+            es: "Enviar currículum",
+            pt: "Enviar currículo",
+        },
+    }
     return (
         <div style={styles.SendResume.wrap}>
             <div style={styles.SendResume.leftColumn}>
                 <div>
                     <h5 style={styles.SendResume.title}>
-                        Не нашли подходящую вакансию?
+                        {lengSendResume.title[locale]}
                     </h5>
                     <div style={styles.SendResume.description}>
-                        Даже если нужной вам вакансии нет в списке, пришлите нам
-                        свое резюме. Нам всегда нужны талантливые люди, и
-                        возможно, ваша вакансия откроется в ближайшее время
+                        {lengSendResume.content[locale]}
                     </div>
                 </div>
                 <motion.button
@@ -324,14 +392,14 @@ function SendResume(props) {
                     }}
                     style={styles.SendResume.button}
                 >
-                    Отправить резюме
+                    {lengSendResume.btn[locale]}
                 </motion.button>
             </div>
             <div style={styles.SendResume.imgWrap}>
                 <img
                     style={styles.SendResume.img}
                     src="https://framerusercontent.com/images/A3raWVvP4qvxqC9GEd9bGpAi2z0.png"
-                    alt="Не нашли подходящую вакансию?"
+                    alt={lengSendResume.title[locale]}
                 />
             </div>
         </div>
@@ -339,8 +407,13 @@ function SendResume(props) {
 }
 
 function Search(props) {
-    const { searchQuery, setFunction, searchInitial, setFilteredVacancies } =
-        props
+    const {
+        locale,
+        searchQuery,
+        setFunction,
+        searchInitial,
+        setFilteredVacancies,
+    } = props
     const handleChange = (e) => {
         const value = e.target.value
         setFunction(value)
@@ -349,10 +422,27 @@ function Search(props) {
         )
         setFilteredVacancies(filtered)
     }
+
+    const lengSearch = {
+        title: {
+            en: "Open vacancies",
+            ru: "Открытые вакансии",
+            es: "Vacantes abiertas",
+            pt: "Vagas abertas",
+        },
+        placeholder: {
+            en: "Search open vacancies",
+            ru: "Поиск по открытым ваканииям",
+            es: "Buscar vacantes abiertas",
+            pt: "Pesquisar vagas em aberto",
+        },
+    }
     return (
         <>
             <div style={styles.Search.wrap}>
-                <div style={styles.Search.title}>Открытые вакансии</div>
+                <div style={styles.Search.title}>
+                    {lengSearch.title[locale]}
+                </div>
                 <div style={styles.Search.searchWrap}>
                     <input
                         className="search"
@@ -360,7 +450,7 @@ function Search(props) {
                         type="text"
                         value={searchQuery}
                         onChange={handleChange}
-                        placeholder="Поиск по открытым ваканииям"
+                        placeholder={lengSearch.placeholder[locale]}
                     />
                     <img
                         style={{ marginLeft: 12, width: 16, height: 16 }}
@@ -390,7 +480,7 @@ function Search(props) {
 }
 
 function FilterForm(props) {
-    const { departments, selected, onChange } = props
+    const { locale, departments, selected, onChange } = props
     const handleInputChange = (e) => {
         onChange(e.target.value)
     }
@@ -405,13 +495,30 @@ function FilterForm(props) {
             return total
         }
     }, [departments])
+
+    const lengFilterForm = {
+        title: {
+            en: "Filter by teams",
+            ru: "Фильтровать по командам",
+            es: "Filtrar por equipos",
+            pt: "Filtrar por equipes",
+        },
+        allPointName: {
+            en: "All teams",
+            ru: "Все команды",
+            es: "Todos los equipos",
+            pt: "Todas as equipes",
+        },
+    }
     return (
         <div style={styles.FilterForm.wrap}>
-            <div style={styles.FilterForm.title}>Фильтровать по командам</div>
+            <div style={styles.FilterForm.title}>
+                {lengFilterForm.title[locale]}
+            </div>
             <form style={styles.FilterForm.form}>
                 <FilterItem
                     name="allCommads"
-                    title="Все команды"
+                    title={lengFilterForm.allPointName[locale]}
                     key="1"
                     count={totalQuantity}
                     checked={selected}
