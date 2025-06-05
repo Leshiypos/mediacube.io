@@ -3,7 +3,10 @@
 import { addPropertyControls, ControlType } from "framer"
 import { motion } from "framer-motion"
 import { useState, useEffect, useMemo } from "react"
-import { getLocaleFromUrl } from "https://framer.com/m/funcs-hp22.js"
+import {
+    getLocaleFromUrl,
+    checkLocale,
+} from "https://framer.com/m/funcs-hp22.js"
 
 /**
  * These annotations control how your component sizes
@@ -202,10 +205,6 @@ const dataTransl = {
         es: "Resultados de la búsqueda:",
         pt: "Resultados da pesquisa:",
     },
-}
-function checkLocale(leng) {
-    const languagesPos = ["ru", "pt", "es", "en"]
-    return languagesPos.includes(leng)
 }
 
 export default function VacanciesSection(props) {

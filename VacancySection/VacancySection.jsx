@@ -6,6 +6,10 @@ import { useState, useEffect, useMemo } from "react";
 import { BASE_URL } from "https://framer.com/m/VacanciesSection-aPqN.js";
 import SingleCard from "https://framer.com/m/SingleCard-hpiu.js";
 import ButtonBack from "https://framer.com/m/ButtonBack-gKLV.js";
+import {
+  checkLocale,
+  getLocaleFromUrl,
+} from "https://framer.com/m/funcs-hp22.js";
 
 /**
  * These annotations control how your component sizes
@@ -16,18 +20,62 @@ import ButtonBack from "https://framer.com/m/ButtonBack-gKLV.js";
  *
  * @framerIntrinsicWidth 1032
  */
+
+const dataTranslVacancySection = {
+  preTitle: {
+    en: "Remote work",
+    ru: "Удаленная работа",
+    es: "Trabajo remoto",
+    pt: "Trabalho remoto",
+  },
+  errorMessage: {
+    en: "There was a loading error. Please reload the page.",
+    ru: "Произошла ошибка загрузки. Перегрузите страницу",
+    es: "Se produjo un error al cargar. Por favor, recarga la página.",
+    pt: "Ocorreu um erro de carregamento. Recarregue a página.",
+  },
+  loadMessage: {
+    en: "Loading data...",
+    ru: "Загрузка данных...",
+    es: "Cargando datos...",
+    pt: "Carregando dados...",
+  },
+  btnOtherVac: {
+    en: "View other vacancies",
+    ru: "Посмотреть другие вакансии",
+    es: "Ver otras vacantes",
+    pt: "Ver outras vagas",
+  },
+  btnSendRes: {
+    en: "Send resume",
+    ru: "Отправить резюме",
+    es: "Enviar currículum",
+    pt: "Enviar currículo",
+  },
+};
+function getSerchIndexArray(arr, locale) {
+  let index = arr.findIndex((el) => el.lang === locale);
+  return index < 0 ? 0 : index;
+}
 export default function VacancySection(props) {
   const [isLoading, setLoading] = useState(false);
   const [isError, setError] = useState(false);
   const [vacancy, setVacancy] = useState(null);
   const [slug, setSlug] = (useState < string) | (null > null);
   const [isMobile, setIsMobile] = useState(false);
+  const [locale, setLocale] = useState("en");
+  const [vacancyContent, setVacancyContent] = useState("Нет данных");
 
   useEffect(() => {
     const update = () => setIsMobile(window.innerWidth < 768);
     update();
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
+  }, []);
+  useEffect(() => {
+    const currentUrl = window.location.href;
+    const loc = getLocaleFromUrl(currentUrl);
+    if (loc && checkLocale(loc)) setLocale(loc);
   }, []);
 
   useEffect(() => {
@@ -57,6 +105,14 @@ export default function VacancySection(props) {
         });
     }
   }, [slug]);
+
+  useEffect(() => {
+    if (vacancy?.vacancy_contents && locale) {
+      let index = getSerchIndexArray(vacancy.vacancy_contents, locale);
+      console.log(index);
+      setVacancyContent(vacancy?.vacancy_contents[index].content);
+    }
+  }, [locale, vacancy]);
 
   return (
     <>
@@ -88,13 +144,17 @@ export default function VacancySection(props) {
         }}
       >
         {isError ? (
-          <div>Произошла ошибка загрузки. Перегрузите страницу</div>
+          <div>{dataTranslVacancySection.errorMessage[locale]}</div>
         ) : isLoading ? (
-          <div>Загрузка данных</div>
+          <div>{dataTranslVacancySection.loadMessage[locale]}</div>
         ) : (
           vacancy && (
             <>
-              <SingleCard name={vacancy.name} department={vacancy.department} />
+              <SingleCard
+                locale={locale}
+                name={vacancy.name}
+                department={vacancy.department}
+              />
               <div style={{ marginTop: isMobile ? 20 : 80 }}>
                 <div
                   style={{
@@ -109,7 +169,7 @@ export default function VacancySection(props) {
                     src="https://framerusercontent.com/images/Gi7WIMAxKV3wB8smlLm0DY7WMPQ.png"
                     alt="icon"
                   />
-                  Удаленная работа
+                  {dataTranslVacancySection.preTitle[locale]}
                 </div>
                 <h3 style={{ fontSize: 32, margin: "16px 0" }}>
                   Mediacube is looking for a {vacancy.name}!
@@ -117,9 +177,7 @@ export default function VacancySection(props) {
                 <div
                   className="content_single_vacancy"
                   dangerouslySetInnerHTML={{
-                    __html:
-                      vacancy?.vacancy_contents?.[0]?.content ||
-                      "<p>Нет данных</p>",
+                    __html: vacancyContent || "<p>Нет данных</p>",
                   }}
                 />
               </div>
@@ -131,12 +189,12 @@ export default function VacancySection(props) {
                 }}
               >
                 <ButtonBack
-                  title={"Посмотреть другие вакансии"}
+                  title={dataTranslVacancySection.btnOtherVac[locale]}
                   href="/"
                   withArrow={true}
                 />
                 <ButtonBack
-                  title={"Отправить резюме"}
+                  title={dataTranslVacancySection.btnSendRes[locale]}
                   href="#"
                   withArrow={false}
                   isDark={true}

@@ -9,6 +9,27 @@ import { useState, useEffect, useMemo } from "react";
  * @framerSupportedLayoutWidth auto
  * @framerSupportedLayoutHeight auto
  */
+
+const lengSingleCard = {
+  btnAllTitle: {
+    en: "All vacancies",
+    ru: "Все вакансии",
+    es: "Todas las vacantes",
+    pt: "Todas as vagas",
+  },
+  btnShareTitle: {
+    en: "Share Resume",
+    ru: "Поделиться Резюме",
+    es: "Compartir currículum",
+    pt: "Compartilhar currículo",
+  },
+  imgAltText: {
+    en: "Didn't find a suitable vacancy?",
+    ru: "Не нашли подходящую вакансию?",
+    es: "¿No encontraste una vacante adecuada?",
+    pt: "Não encontrou uma vaga adequada?",
+  },
+};
 export default function SingleCard(props) {
   const [isMobile, setIsMobile] = useState(false);
 
@@ -18,7 +39,7 @@ export default function SingleCard(props) {
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
   }, []);
-  const { name, department } = props;
+  const { name, department, locale } = props;
 
   return (
     <div
@@ -59,9 +80,13 @@ export default function SingleCard(props) {
               : { display: "flex", gap: 16 }
           }
         >
-          <ButtonBack title={"Все вакансии"} href="/" withArrow={true} />
           <ButtonBack
-            title={"Поделиться Резюме"}
+            title={lengSingleCard.btnAllTitle[locale]}
+            href="/"
+            withArrow={true}
+          />
+          <ButtonBack
+            title={lengSingleCard.btnShareTitle[locale]}
             href="#"
             withArrow={false}
             isDark={true}
@@ -72,7 +97,7 @@ export default function SingleCard(props) {
         <img
           style={styles.img}
           src="https://framerusercontent.com/images/EhMggQXwRTRthqSEoq9ci5T2c0.png"
-          alt="Не нашли подходящую вакансию?"
+          alt={lengSingleCard.imgAltText[locale]}
         />
       </div>
     </div>
