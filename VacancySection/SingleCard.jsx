@@ -39,7 +39,8 @@ export default function SingleCard(props) {
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
   }, []);
-  const { name, department, locale } = props;
+  const { name, department, locale, is_remote } = props;
+  console.log(is_remote);
 
   return (
     <div
@@ -65,9 +66,79 @@ export default function SingleCard(props) {
               fontSize: 14,
             }}
           >
-            {department}
+            {!is_remote && department}
           </div>
+          {is_remote && (
+            <div
+              style={{
+                textTransform: "uppercase",
+                color: "#4039FF",
+                marginBottom: 8,
+              }}
+            >
+              В архиве с 9 марта 2024 г.
+            </div>
+          )}
           <h5 style={styles.title}>{name}</h5>
+          {is_remote && (
+            <>
+              {" "}
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 8,
+                  color: "#C40B08",
+                  fontSize: 16,
+                  fontWeight: 600,
+                  marginBottom: 5,
+                }}
+              >
+                <div style={{ marginBottom: -5 }}>
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <g clip-path="url(#clip0_222_1721)">
+                      <path
+                        d="M12 14V8"
+                        stroke="#C40B08"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                      />
+                      <circle cx="12" cy="16.25" r="0.75" fill="#C40B08" />
+                      <path
+                        d="M11.4229 3.58334C11.6635 3.16667 12.2426 3.14042 12.5254 3.50522L12.5771 3.58334L21.165 18.4583C21.4216 18.9028 21.1011 19.4583 20.5879 19.4583H3.41211C2.93084 19.4583 2.61833 18.9697 2.79297 18.5423L2.83496 18.4583L11.4229 3.58334Z"
+                        stroke="#C40B08"
+                        stroke-width="1.5"
+                      />
+                    </g>
+                    <defs>
+                      <clipPath id="clip0_222_1721">
+                        <rect width="24" height="24" fill="white" />
+                      </clipPath>
+                    </defs>
+                  </svg>
+                </div>
+                <div>К сожелению, вакансия закрыта</div>
+              </div>
+              <div
+                style={{
+                  color: "#636884",
+                  lineHeight: "120%",
+                  fontSize: 14,
+                  marginBottom: 40,
+                }}
+              >
+                Но если вы подходите на эту роль, оставьте свое резюме и мы
+                свяжемся с вами, когда у нас появится подобная вакансия
+              </div>
+            </>
+          )}
         </div>
         <div
           style={

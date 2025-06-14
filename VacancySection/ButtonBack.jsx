@@ -18,7 +18,7 @@ export default function ButtonBack(props) {
 
     return (
         <motion.a
-            href="/"
+            href={href}
             whileHover={{
                 backgroundColor: hover,
                 color: "rgba(255, 255, 255, 1)",

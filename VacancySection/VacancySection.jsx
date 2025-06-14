@@ -20,6 +20,12 @@ import {
  *
  * @framerIntrinsicWidth 1032
  */
+const slagLocale = {
+  en: "en-US",
+  ru: "ru-RU",
+  es: "es-ES",
+  pt: "pt-PT",
+};
 
 const dataTranslVacancySection = {
   preTitle: {
@@ -113,6 +119,7 @@ export default function VacancySection(props) {
       setVacancyContent(vacancy?.vacancy_contents[index].content);
     }
   }, [locale, vacancy]);
+  console.log(slagLocale[locale]);
 
   return (
     <>
@@ -154,6 +161,7 @@ export default function VacancySection(props) {
                 locale={locale}
                 name={vacancy.name}
                 department={vacancy.department}
+                is_remote={vacancy.is_remote}
               />
               <div style={{ marginTop: isMobile ? 20 : 80 }}>
                 <div
@@ -172,7 +180,7 @@ export default function VacancySection(props) {
                   {dataTranslVacancySection.preTitle[locale]}
                 </div>
                 <h3 style={{ fontSize: 32, margin: "16px 0" }}>
-                  Mediacube is looking for a {vacancy.name}!
+                  {vacancy.name}!
                 </h3>
                 <div
                   className="content_single_vacancy"
@@ -190,7 +198,7 @@ export default function VacancySection(props) {
               >
                 <ButtonBack
                   title={dataTranslVacancySection.btnOtherVac[locale]}
-                  href="/"
+                  href={`/${slagLocale[locale]}/vacancies`}
                   withArrow={true}
                 />
                 <ButtonBack

@@ -174,6 +174,11 @@ const styles = {
     },
 }
 
+function getSerchIndexArray(arr, locale) {
+    let index = arr.findIndex((el) => el.lang === locale)
+    return index < 0 ? 0 : index
+}
+
 const dataTransl = {
     titleTrue: {
         en: "open positions",
@@ -326,17 +331,29 @@ export default function VacanciesSection(props) {
                         </div>
                         <div style={styles.VacanciesSection.searchRezContent}>
                             {filteredVacancies &&
-                                filteredVacancies.map((vacancy, index) => (
-                                    <JobCard
-                                        category={vacancy.department}
-                                        vacancyName={vacancy.name}
-                                        description={
-                                            vacancy.vacancy_contents[0].preview
-                                        }
-                                        slug={vacancy.slug}
-                                        key={index}
-                                    />
-                                ))}
+                                filteredVacancies.map((vacancy, index) => {
+                                    let indexDescr = 0
+                                    if (vacancy?.vacancy_contents) {
+                                        indexDescr = getSerchIndexArray(
+                                            vacancy.vacancy_contents,
+                                            locale
+                                        )
+                                    }
+                                    return (
+                                        <JobCard
+                                            category={vacancy.department}
+                                            vacancyName={vacancy.name}
+                                            description={
+                                                vacancy.vacancy_contents[
+                                                    indexDescr
+                                                ].preview
+                                            }
+                                            slug={vacancy.slug}
+                                            key={index}
+                                            locale={locale}
+                                        />
+                                    )
+                                })}
                             {!!filteredVacancies?.length || (
                                 <span style={styles.VacanciesSection.notFound}>
                                     {dataTransl.notFound[locale]}
@@ -570,12 +587,22 @@ type TProps = {
     vacancyName: string
     description: string
     slug: string
+    locale: string
 }
 function JobCard(props: TProps): React.JSX.Element {
-    const { category, vacancyName, description, slug } = props
+    const { category, vacancyName, description, slug, locale } = props
+    const slagLocale = {
+        en: "en-US",
+        ru: "ru-RU",
+        es: "es-ES",
+        pt: "pt-PT",
+    }
     return (
         <li style={styles.JobCard.wrap}>
-            <a href={`/vacancy/${slug}`} style={styles.JobCard.link}>
+            <a
+                href={`/${slagLocale[locale]}/vacancies/${slug}`}
+                style={styles.JobCard.link}
+            >
                 <div style={styles.JobCard.categoty}>{category}</div>
                 <div style={styles.JobCard.title}>{vacancyName}</div>
                 <div style={styles.JobCard.description}>{description}</div>
