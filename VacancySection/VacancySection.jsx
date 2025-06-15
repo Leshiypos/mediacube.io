@@ -161,24 +161,26 @@ export default function VacancySection(props) {
                 locale={locale}
                 name={vacancy.name}
                 department={vacancy.department}
-                is_remote={vacancy.is_remote}
+                is_active={vacancy.is_active}
               />
               <div style={{ marginTop: isMobile ? 20 : 80 }}>
-                <div
-                  style={{
-                    display: "flex",
-                    gap: 8,
-                    alignItems: "center",
-                    color: "rgba(64, 57, 255, 1)",
-                    fontWeight: 600,
-                  }}
-                >
-                  <img
-                    src="https://framerusercontent.com/images/Gi7WIMAxKV3wB8smlLm0DY7WMPQ.png"
-                    alt="icon"
-                  />
-                  {dataTranslVacancySection.preTitle[locale]}
-                </div>
+                {vacancy?.is_remote && (
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 8,
+                      alignItems: "center",
+                      color: "rgba(64, 57, 255, 1)",
+                      fontWeight: 600,
+                    }}
+                  >
+                    <img
+                      src="https://framerusercontent.com/images/Gi7WIMAxKV3wB8smlLm0DY7WMPQ.png"
+                      alt="icon"
+                    />
+                    {dataTranslVacancySection.preTitle[locale]}
+                  </div>
+                )}
                 <h3 style={{ fontSize: 32, margin: "16px 0" }}>
                   {vacancy.name}!
                 </h3>
@@ -203,7 +205,11 @@ export default function VacancySection(props) {
                 />
                 <ButtonBack
                   title={dataTranslVacancySection.btnSendRes[locale]}
-                  href="#"
+                  href={`/${
+                    slagLocale[locale]
+                  }/form?page=vacancies${encodeURIComponent(
+                    "/"
+                  )}${slug}&form=cv`}
                   withArrow={false}
                   isDark={true}
                 />

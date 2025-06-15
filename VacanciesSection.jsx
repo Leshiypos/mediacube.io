@@ -7,6 +7,7 @@ import {
     getLocaleFromUrl,
     checkLocale,
 } from "https://framer.com/m/funcs-hp22.js"
+import ButtonBack from "https://framer.com/m/ButtonBack-gKLV.js"
 
 /**
  * These annotations control how your component sizes
@@ -18,7 +19,12 @@ import {
  * @framerIntrinsicWidth 1032
  */
 export const BASE_URL = "https://mcpay.mc-team.workers.dev/api/client/vacancies"
-
+const slagLocale = {
+    en: "en-US",
+    ru: "ru-RU",
+    es: "es-ES",
+    pt: "pt-PT",
+}
 const styles = {
     SendResume: {
         wrap: {
@@ -402,14 +408,13 @@ function SendResume(props) {
                         {lengSendResume.content[locale]}
                     </div>
                 </div>
-                <motion.button
-                    whileHover={{
-                        backgroundColor: "rgba(25, 17, 245, 1)",
-                    }}
-                    style={styles.SendResume.button}
-                >
-                    {lengSendResume.btn[locale]}
-                </motion.button>
+
+                <ButtonBack
+                    title={lengSendResume.btn[locale]}
+                    href={`/${slagLocale[locale]}/form?page=vacancies&form=cv`}
+                    withArrow={false}
+                    isDark={true}
+                />
             </div>
             <div style={styles.SendResume.imgWrap}>
                 <img
@@ -591,12 +596,6 @@ type TProps = {
 }
 function JobCard(props: TProps): React.JSX.Element {
     const { category, vacancyName, description, slug, locale } = props
-    const slagLocale = {
-        en: "en-US",
-        ru: "ru-RU",
-        es: "es-ES",
-        pt: "pt-PT",
-    }
     return (
         <li style={styles.JobCard.wrap}>
             <a
