@@ -12,9 +12,10 @@ type TProps = {
     href?: string
     isDark?: boolean
     withArrow?: boolean
+    isArrowRight?: boolean
 }
 export default function ButtonBack(props) {
-    const { title, href, isDark, withArrow } = props
+    const { title, href, isDark, withArrow, isArrowRight } = props
 
     return (
         <motion.a
@@ -30,8 +31,13 @@ export default function ButtonBack(props) {
                 fontWeight: isDark ? 400 : 600,
             }}
         >
-            {withArrow && <span style={{ marginRight: 14 }}>{"<"}</span>}
+            {withArrow && !isArrowRight && (
+                <span style={{ marginRight: 14 }}>{"<"}</span>
+            )}
             {title}
+            {withArrow && isArrowRight && (
+                <span style={{ marginLeft: 14 }}>{">"}</span>
+            )}
         </motion.a>
     )
 }
@@ -59,6 +65,7 @@ ButtonBack.defaultProps = {
     href: "#",
     isDark: false,
     withArrow: false,
+    isArrowRight: false,
 }
 
 addPropertyControls(ButtonBack, {
