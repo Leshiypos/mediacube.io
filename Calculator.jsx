@@ -12,12 +12,87 @@ import { motion } from "framer-motion"
  *
  * @framerIntrinsicWidth 1032
  */
+const slagLocale = {
+    en: "en-US",
+    ru: "ru-RU",
+    es: "es-ES",
+    pt: "pt-PT",
+}
+const dataTransl = {
+    titleSection: {
+        en: "Advance payment calculator",
+        ru: "Калькулятор аванса",
+        es: "Calculadora de pagos por adelantado",
+        pt: "Calculadora de pagamento antecipado",
+    },
+    income: {
+        en: "Author's Income (DAVT)",
+        ru: "Доход автора (DAVT)",
+        es: "Ingresos del autor (DAVT)",
+        pt: "Rendimento do Autor (DAVT)",
+    },
+    sum: {
+        en: "Advance payment amount (ZAVT)",
+        ru: "Сумма аванса (ZAVT)",
+        es: "Importe del pago anticipado (ZAVT)",
+        pt: "Valor do pagamento antecipado (ZAVT)",
+    },
+    retentialRate: {
+        en: "Retention Rate (DUD %)",
+        ru: "Доля удержания (DUD %)",
+        es: "Tasa de retención (DUD %)",
+        pt: "Taxa de retenção (DUD%)",
+    },
+    butTitleRequest: {
+        en: "Request an advance payment",
+        ru: "Запросить аванс",
+        es: "Solicitar un pago por adelantado",
+        pt: "Solicitar um pagamento antecipado",
+    },
+    butTitleContactUs: {
+        en: "Contact us",
+        ru: "Связаться с нами",
+        es: "Contáctanos",
+        pt: "Contate-nos",
+    },
+    sumPriceDescription: {
+        en: "Advance payment amount",
+        ru: "Сумма аванса",
+        es: "Importe del pago anticipado",
+        pt: "Valor do pagamento adiantado",
+    },
+    sumPriceWithComDescription: {
+        en: "Advance amount with commission",
+        ru: "Сумма аванса с комиссией",
+        es: "Importe del anticipo con comisión",
+        pt: "Valor do adiantamento com comissão",
+    },
+    commission: {
+        en: "Commission",
+        ru: "Комиссия",
+        es: "Comisión",
+        pt: "Comissão",
+    },
+    periodTitle: {
+        en: "Payment period",
+        ru: "Период оплаты",
+        es: "Periodo de pago",
+        pt: "Período de pagamento",
+    },
+    monthsTitle: {
+        en: "months",
+        ru: "месяцев",
+        es: "meses",
+        pt: "meses",
+    },
+}
 
 export default function AdvanceCalculator() {
     const [input, setInput] = useState({ ZAVT: 1000, DAVT: 3000, DUD: 0.8 })
     const [result, setResult] = useState(null)
     const [isMobile, setIsMobile] = useState(false)
     const [isTablet, setIsTablet] = useState(false)
+    const [locale, setLocale] = useState("ru")
 
     useEffect(() => {
         const update = () => {
@@ -27,6 +102,11 @@ export default function AdvanceCalculator() {
         update()
         window.addEventListener("resize", update)
         return () => window.removeEventListener("resize", update)
+    }, [])
+    useEffect(() => {
+        const currentUrl = window.location.href
+        const loc = getLocaleFromUrl(currentUrl)
+        if (loc && checkLocale(loc)) setLocale(loc)
     }, [])
 
     const commissionByMonths = {
@@ -242,7 +322,7 @@ export default function AdvanceCalculator() {
         },
         wrapButtons: {
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: "flex-start",
             gap: 8,
         },
         button: {
@@ -306,7 +386,9 @@ export default function AdvanceCalculator() {
                 className="max-w-xl mx-auto mt-8 p-4 border rounded-xl shadow space-y-6"
                 style={{ ...styles.wrapSection }}
             >
-                <h2 className="text-2xl font-bold">Калькулятор аванса</h2>
+                <h2 className="text-2xl font-bold">
+                    {dataTransl.titleSection[locale]}
+                </h2>
                 <div style={{ ...styles.wrapCalc }}>
                     <div
                         style={{
@@ -321,7 +403,7 @@ export default function AdvanceCalculator() {
                                 className="block font-medium"
                                 style={styles.label}
                             >
-                                Доход автора (DAVT)
+                                {dataTransl.income[locale]}
                             </label>
 
                             <InputNumber
@@ -360,7 +442,7 @@ export default function AdvanceCalculator() {
                                 className="block font-medium"
                                 style={styles.label}
                             >
-                                Сумма аванса (ZAVT)
+                                {dataTransl.sum[locale]}
                             </label>
 
                             <InputNumber
@@ -397,7 +479,7 @@ export default function AdvanceCalculator() {
                                 className="block font-medium"
                                 style={styles.label}
                             >
-                                Доля удержания (DUD %)
+                                {dataTransl.retentialRate[locale]}
                             </label>
 
                             <InputNumber
@@ -443,13 +525,13 @@ export default function AdvanceCalculator() {
                                 }}
                             >
                                 <ButtonBack
-                                    title={"Запросить аванс"}
+                                    title={dataTransl.butTitleRequest[locale]}
                                     href={`#`}
                                     withArrow={false}
                                     isDark={true}
                                 />
                                 <ButtonBack
-                                    title={"Связаться с нами"}
+                                    title={dataTransl.butTitleContactUs[locale]}
                                     href={`#`}
                                     isArrowRight={true}
                                     withArrow={true}
@@ -480,7 +562,7 @@ export default function AdvanceCalculator() {
                                         <strong>{result.payout}$</strong>
                                     </p>
                                     <p style={styles.advanceAmountTitle}>
-                                        Advance amount
+                                        {dataTransl.sumPriceDescription[locale]}
                                     </p>
                                 </div>
                             </div>
@@ -492,7 +574,12 @@ export default function AdvanceCalculator() {
                                         </strong>
                                     </p>
                                     <p style={styles.advanceComissionTitle}>
-                                        Advance amount with commission
+                                        {
+                                            dataTransl
+                                                .sumPriceWithComDescription[
+                                                locale
+                                            ]
+                                        }
                                     </p>
                                 </div>
                             )}
@@ -515,7 +602,12 @@ export default function AdvanceCalculator() {
                                                 fontSize: 11,
                                             }}
                                         >
-                                            Advance amount with commission{" "}
+                                            {
+                                                dataTransl
+                                                    .sumPriceWithComDescription[
+                                                    locale
+                                                ]
+                                            }
                                         </div>
                                     </div>
                                 )}
@@ -536,7 +628,7 @@ export default function AdvanceCalculator() {
                                             flexDirection: "column",
                                         }}
                                     >
-                                        Commission{" "}
+                                        {dataTransl.commission[locale]}
                                         <img
                                             src="https://framerusercontent.com/images/9ixlnLmV3rQH6XKDig5iBnFWLQ.png"
                                             alt="info button"
@@ -552,7 +644,10 @@ export default function AdvanceCalculator() {
                                     }}
                                 >
                                     <div style={{ color: "black" }}>
-                                        <strong>{result.months} months</strong>
+                                        <strong>
+                                            {result.months}{" "}
+                                            {dataTransl.monthsTitle[locale]}
+                                        </strong>
                                     </div>
                                     <div
                                         style={{
@@ -561,7 +656,7 @@ export default function AdvanceCalculator() {
                                             flexDirection: "column",
                                         }}
                                     >
-                                        Payment period
+                                        {dataTransl.periodTitle[locale]}
                                         <img
                                             src="https://framerusercontent.com/images/9ixlnLmV3rQH6XKDig5iBnFWLQ.png"
                                             title="info"
@@ -583,13 +678,17 @@ export default function AdvanceCalculator() {
                                     }}
                                 >
                                     <ButtonBack
-                                        title={"Запросить аванс"}
+                                        title={
+                                            dataTransl.butTitleRequest[locale]
+                                        }
                                         href={`#`}
                                         withArrow={false}
                                         isDark={true}
                                     />
                                     <ButtonBack
-                                        title={"Связаться с нами"}
+                                        title={
+                                            dataTransl.butTitleContactUs[locale]
+                                        }
                                         href={`#`}
                                         isArrowRight={true}
                                         withArrow={true}
@@ -729,4 +828,15 @@ ButtonBack.defaultProps = {
     isDark: false,
     withArrow: false,
     isArrowRight: false,
+}
+
+export function getLocaleFromUrl(url) {
+    const regex = /https?:\/\/[^\/]+\/([a-z]{2})-[A-Z]{2}/
+    const match = url.match(regex)
+    return match ? match[1] : null
+}
+
+export function checkLocale(leng) {
+    const languagesPos = ["ru", "pt", "es", "en"]
+    return languagesPos.includes(leng)
 }
