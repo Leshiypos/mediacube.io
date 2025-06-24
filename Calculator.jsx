@@ -1,6 +1,6 @@
 // Framer-компонент: рабочая стабильная версия без процентов и форматирования
 import * as React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { motion } from "framer-motion"
 
 /**
@@ -363,8 +363,8 @@ export default function AdvanceCalculator() {
                     input[type="range"]::-webkit-slider-thumb {
                     -webkit-appearance: none;
                     appearance: none;
-                    width: ${isMobile ? 15 : 10}px;
-                    height: ${isMobile ? 15 : 10}px;
+                    width: 10px;
+                    height: 10px;
                     border-radius: 3px;
                     background: #4039ff;
                     cursor: pointer;
@@ -374,8 +374,8 @@ export default function AdvanceCalculator() {
                     }
 
                     input[type="range"]::-moz-range-thumb {
-                    width: ${isMobile ? 15 : 10}px;
-                    height: ${isMobile ? 15 : 10}px;
+                    width: 10px;
+                    height: 10px;
                     border-radius: 3px;
                     background: #4039ff;
                     cursor: pointer;
@@ -449,6 +449,7 @@ export default function AdvanceCalculator() {
                                 value={input.ZAVT}
                                 min={minZAVT}
                                 max={maxZAVT}
+                                step={Math.round((maxZAVT - minZAVT) / 100)}
                                 onChange={(e) =>
                                     handleInputChange("ZAVT", e.target.value)
                                 }
@@ -730,7 +731,39 @@ function InputRange(props) {
 }
 
 function InputNumber(props) {
-    const { value, onChange, min, max, step } = props
+    const { value, onChange, min, max, step = 1 } = props
+    const startXRef = useRef(null)
+    const lastStepsRef = useRef(0)
+
+    // Для сенсорных свайпов
+    const handleTouchStart = (e) => {
+        startXRef.current = e.touches[0].clientX
+        lastStepsRef.current = 0
+    }
+
+    const handleTouchMove = (e) => {
+        if (startXRef.current === null) return
+        const deltaX = e.touches[0].clientX - startXRef.current
+        const threshold = 15 // чувствительность: px на один шаг
+
+        // Количество шагов в зависимости от дельты
+        const steps = Math.floor(deltaX / threshold)
+        if (steps !== lastStepsRef.current) {
+            const diff = steps - lastStepsRef.current
+            let newVal = Number(value) + diff * step
+            newVal = Math.max(min, Math.min(max, newVal))
+            onChange({
+                target: { value: newVal },
+            })
+            lastStepsRef.current = steps
+        }
+        e.preventDefault() // блокируем прокрутку страницы при свайпе
+    }
+
+    const handleTouchEnd = () => {
+        startXRef.current = null
+        lastStepsRef.current = 0
+    }
 
     return (
         <input
@@ -741,6 +774,9 @@ function InputNumber(props) {
             className="w-full border px-3 py-2 rounded"
             value={value}
             onChange={onChange}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
             style={{
                 fontSize: 16,
                 color: "black",
