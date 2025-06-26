@@ -527,13 +527,13 @@ export default function AdvanceCalculator() {
                             >
                                 <ButtonBack
                                     title={dataTransl.butTitleRequest[locale]}
-                                    href={`#`}
+                                    href={`https://mcpay.io/${locale}/auth/sign-up`}
                                     withArrow={false}
                                     isDark={true}
                                 />
                                 <ButtonBack
                                     title={dataTransl.butTitleContactUs[locale]}
-                                    href={`#`}
+                                    href={`/${slagLocale[locale]}/form?page=early-funds`}
                                     isArrowRight={true}
                                     withArrow={true}
                                     isDark={false}
@@ -682,7 +682,7 @@ export default function AdvanceCalculator() {
                                         title={
                                             dataTransl.butTitleRequest[locale]
                                         }
-                                        href={`#`}
+                                        href={`https://mcpay.io/${locale}/auth/sign-up`}
                                         withArrow={false}
                                         isDark={true}
                                     />
@@ -690,7 +690,7 @@ export default function AdvanceCalculator() {
                                         title={
                                             dataTransl.butTitleContactUs[locale]
                                         }
-                                        href={`#`}
+                                        href={`/${slagLocale[locale]}/form?page=early-funds`}
                                         isArrowRight={true}
                                         withArrow={true}
                                         isDark={false}
@@ -757,7 +757,7 @@ function InputNumber(props) {
             })
             lastStepsRef.current = steps
         }
-        e.preventDefault() // блокируем прокрутку страницы при свайпе
+        //e.preventDefault()  блокируем прокрутку страницы при свайпе
     }
 
     const handleTouchEnd = () => {
